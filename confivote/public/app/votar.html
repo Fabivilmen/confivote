@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>ConfiVote</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body{
+background:#f4f6f9;
+text-align:center;
+padding-top:30px
+}
+.card{
+border-radius:14px;
+border:none;
+box-shadow:0 4px 12px rgba(0,0,0,.08)
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card p-4">
+
+<h3 class="mb-3">ConfiVote</h3>
+
+<div id="status">Validando token...</div>
+<div id="titular" class="mt-2"></div>
+<div id="peso" class="mb-3"></div>
+
+<div id="pauta"></div>
+
+</div>
+
+</div>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+
+const token = params.get("token");
+const assembleiaId = params.get("assembleiaId");
+
+let pautaAtual = null;
+
+async function validarToken(){
+
+try{
+
+if(!token){
+document.getElementById("status").innerHTML =
+"<span class='text-danger'>Token não informado</span>";
+return;
+}
+
+const res = await fetch("/api/votar/validar?token="+token);
+const data = await res.json();
+
+if(!data.valido){
+document.getElementById("status").innerHTML =
+"<span class='text-danger'>Token inválido</span>";
+return;
+}
+
+document.getElementById("status").innerHTML =
+"<span class='text-success'>Token válido</span>";
+
+document.getElementById("titular").innerHTML =
+"Titular: <b>"+data.morador+"</b>";
+
+document.getElementById("peso").innerHTML =
+"Peso: "+data.peso;
+
+}catch(e){
+
+document.getElementById("status").innerHTML =
+"<span class='text-danger'>Erro ao validar token</span>";
+
+}
+
+}
+
+async function verificarPauta(){
+
+try{
+
+const res = await fetch("/api/pautas/ativa?assembleiaId="+assembleiaId);
+const pauta = await res.json();
+
+if(!pauta.ativa){
+
+document.getElementById("pauta").innerHTML =
+"<div class='text-muted'>Aguardando abertura da pauta...</div>";
+
+return;
+
+}
+
+pautaAtual = pauta;
+
+document.getElementById("pauta").innerHTML = `
+
+<h4 class="mt-3 mb-2">
+Pauta ${pauta.numero}
+</h4>
+
+<div class="fw-bold mb-2">
+${pauta.titulo}
+</div>
+
+<div class="text-muted mb-4">
+${pauta.descricao}
+</div>
+
+<div class="d-flex justify-content-center gap-3">
+
+<button class="btn btn-success btn-lg"
+onclick="votar('SIM')">SIM</button>
+
+<button class="btn btn-danger btn-lg"
+onclick="votar('NAO')">NÃO</button>
+
+<button class="btn btn-warning btn-lg"
+onclick="votar('ABSTENCAO')">ABSTENÇÃO</button>
+
+</div>
+
+`;
+
+}catch(e){
+
+document.getElementById("pauta").innerHTML =
+"<div class='text-danger'>Erro ao carregar pauta</div>";
+
+}
+
+}
+
+async function votar(voto){
+
+if(!pautaAtual){
+alert("Nenhuma pauta ativa");
+return;
+}
+
+await fetch("/api/votar",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+token:token,
+pautaNumero:pautaAtual.numero,
+assembleiaId:assembleiaId,
+voto:voto
+})
+
+});
+
+document.getElementById("pauta").innerHTML =
+"<div class='text-success mt-3'>Voto registrado ✔</div>";
+
+}
+
+validarToken();
+setInterval(verificarPauta,2000);
+
+</script>
+
+</body>
+</html>

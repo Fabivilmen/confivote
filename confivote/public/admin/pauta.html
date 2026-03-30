@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Pauta</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body{
+background:#f4f6f9
+}
+
+.card{
+border:none;
+border-radius:14px;
+box-shadow:0 4px 14px rgba(0,0,0,.1)
+}
+
+.btn-big{
+padding:14px 22px;
+font-size:18px
+}
+
+.descricao{
+font-size:18px;
+margin-bottom:20px;
+color:#444
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container py-5" style="max-width:700px">
+
+<div class="card p-4">
+
+<h3 id="titulo"></h3>
+
+<div id="descricao" class="descricao"></div>
+
+<div class="d-flex gap-2 my-3 justify-content-center">
+
+<button class="btn btn-success btn-big" onclick="votar('sim')">
+SIM
+</button>
+
+<button class="btn btn-danger btn-big" onclick="votar('nao')">
+NÃO
+</button>
+
+<button class="btn btn-warning btn-big" onclick="votar('abs')">
+ABSTENÇÃO
+</button>
+
+</div>
+
+<div class="fw-bold mt-3" id="resultado"></div>
+
+<div class="text-danger mt-1" id="faltantes"></div>
+
+<button class="btn btn-dark w-100 mt-3 btn-big" onclick="encerrar()">
+Encerrar pauta
+</button>
+
+<button id="btnAta"
+class="btn btn-primary w-100 mt-2 btn-big"
+style="display:none"
+onclick="location.href='ata.html?assembleiaId='+assembleiaId">
+GERAR ATA
+</button>
+
+<button class="btn btn-outline-secondary mt-2" onclick="history.back()">
+Voltar sessão
+</button>
+
+</div>
+</div>
+
+<script>
+
+const qs = new URLSearchParams(location.search);
+
+const assembleiaId = qs.get("assembleiaId");
+const pautaIndex = Number(qs.get("pauta"));
+
+const assembleia =
+JSON.parse(localStorage.getItem("confivote_assembleia_"+assembleiaId));
+
+const tokens =
+JSON.parse(localStorage.getItem("tokens_"+assembleiaId)) || [];
+
+const pauta = assembleia.pautas[pautaIndex];
+
+
+/* TITULO */
+
+document.getElementById("titulo").innerText =
+"Pauta "+(pautaIndex+1)+" - "+(pauta.titulo || "Sem título");
+
+
+/* DESCRIÇÃO */
+
+document.getElementById("descricao").innerText =
+pauta.descricao && pauta.descricao.trim() !== ""
+? pauta.descricao
+: "Sem descrição";
+
+
+/* VOTOS */
+
+let votos =
+JSON.parse(localStorage.getItem("votos_"+assembleiaId+"_"+pautaIndex) || "{}");
+
+
+
+function votar(tipo){
+
+const token = prompt("Informe o token");
+
+if(!tokens.find(t=>t.token===token)){
+alert("Token inválido");
+return;
+}
+
+if(votos[token]){
+alert("Token já votou");
+return;
+}
+
+votos[token] = tipo;
+
+localStorage.setItem(
+"votos_"+assembleiaId+"_"+pautaIndex,
+JSON.stringify(votos)
+);
+
+contar();
+
+}
+
+
+
+function contar(){
+
+let sim=0;
+let nao=0;
+let abs=0;
+let total=0;
+
+
+/* PESO TOTAL */
+
+tokens.forEach(t=>{
+total += Number(t.quotite || 0);
+});
+
+
+/* CONTAGEM */
+
+Object.entries(votos).forEach(([tk,v])=>{
+
+const token = tokens.find(t=>t.token===tk);
+
+if(!token) return;
+
+const peso = Number(token.quotite || 0);
+
+if(v==="sim") sim += peso;
+if(v==="nao") nao += peso;
+if(v==="abs") abs += peso;
+
+});
+
+
+const perc = total ? (sim*100/total).toFixed(2) : 0;
+
+
+/* RESULTADO */
+
+document.getElementById("resultado").innerText =
+"SIM: "+sim+" | NÃO: "+nao+" | ABS: "+abs+" | %SIM: "+perc+"%";
+
+
+/* FALTANTES */
+
+const faltam = tokens.length - Object.keys(votos).length;
+
+document.getElementById("faltantes").innerText =
+faltam>0
+? "Faltam "+faltam+" votos"
+: "Todos votaram";
+
+}
+
+
+
+function encerrar(){
+
+if(Object.keys(votos).length < tokens.length){
+
+alert("Ainda faltam votos");
+
+return;
+
+}
+
+let sim=0;
+let nao=0;
+let abs=0;
+let total=0;
+
+tokens.forEach(t=>{
+total += Number(t.quotite || 0);
+});
+
+
+Object.entries(votos).forEach(([tk,v])=>{
+
+const token = tokens.find(t=>t.token===tk);
+
+if(!token) return;
+
+const peso = Number(token.quotite || 0);
+
+if(v==="sim") sim += peso;
+if(v==="nao") nao += peso;
+if(v==="abs") abs += peso;
+
+});
+
+
+const perc = total ? (sim*100/total) : 0;
+
+const aprovado = perc >= 50
+? "APROVADA"
+: "REPROVADA";
+
+
+localStorage.setItem(
+
+"resultado_final_"+assembleiaId+"_"+pautaIndex,
+
+JSON.stringify({
+
+sim,
+nao,
+abs,
+perc,
+aprovado
+
+})
+
+);
+
+
+const proxima = pautaIndex+1;
+
+
+if(proxima < assembleia.pautas.length){
+
+location.href =
+"pauta.html?assembleiaId="+assembleiaId+"&pauta="+proxima;
+
+}else{
+
+document.getElementById("btnAta").style.display="block";
+
+}
+
+}
+
+
+contar();
+
+</script>
+
+</body>
+</html>

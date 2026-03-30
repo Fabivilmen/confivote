@@ -1,0 +1,229 @@
+[
+  {
+    "id": 1771706648234,
+    "token": "3YYN-4VEO",
+    "assembleiaId": "1",
+    "pautaId": "1",
+    "voto": "SIM",
+    "peso": 257000,
+    "createdAt": "2026-02-21T20:44:08.234Z"
+  },
+  {
+    "id": 1771706807639,
+    "token": "6GYP-6KCN",
+    "assembleiaId": "1",
+    "pautaId": "1",
+    "voto": "SIM",
+    "peso": 98000,
+    "createdAt": "2026-02-21T20:46:47.639Z"
+  },
+  {
+    "id": 1771706903356,
+    "token": "V43M-NLE4",
+    "assembleiaId": "1",
+    "pautaId": "1",
+    "voto": "SIM",
+    "peso": 87000,
+    "createdAt": "2026-02-21T20:48:23.356Z"
+  },
+  {
+    "token": "5RI9AB",
+    "voto": "SIM",
+    "data": "2026-03-08T19:49:41.434Z"
+  },
+  {
+    "token": "5RI9AB",
+    "voto": "SIM",
+    "data": "2026-03-08T19:52:18.804Z"
+  },
+  {
+    "token": "5RI9AB",
+    "voto": "NAO",
+    "data": "2026-03-08T19:52:24.126Z"
+  },
+  {
+    "token": "UBWIET",
+    "voto": "SIM",
+    "data": "2026-03-08T20:50:01.569Z"
+  },
+  {
+    "token": "UBWIET",
+    "voto": "NAO",
+    "data": "2026-03-08T20:50:33.508Z"
+  },
+  {
+    "token": "UBWIET",
+    "voto": "NAO",
+    "data": "2026-03-08T20:51:06.378Z"
+  },
+  {
+    "token": "8K68PO",
+    "voto": "SIM",
+    "data": "2026-03-08T20:56:12.805Z"
+  },
+  {
+    "token": "8K68PO",
+    "voto": "SIM",
+    "data": "2026-03-08T20:56:12.807Z"
+  },
+  {
+    "token": "8K68PO",
+    "voto": "SIM",
+    "data": "2026-03-08T20:56:13.287Z"
+  },
+  {
+    "token": "TPAZWW",
+    "voto": "SIM",
+    "data": "2026-03-08T20:56:50.043Z"
+  },
+  {
+    "token": "TPAZWW",
+    "voto": "SIM",
+    "data": "2026-03-08T20:57:08.373Z"
+  },
+  {
+    "token": "8K68PO",
+    "voto": "SIM",
+    "data": "2026-03-08T20:57:25.057Z"
+  },
+  {
+    "token": "TPAZWW",
+    "voto": "SIM",
+    "data": "2026-03-08T20:57:48.908Z"
+  },
+  {
+    "token": "TPAZWW",
+    "voto": "SIM",
+    "data": "2026-03-08T21:14:03.503Z"
+  },
+  {
+    "token": "8K68PO",
+    "voto": "SIM",
+    "data": "2026-03-08T21:14:42.406Z"
+  },
+  {
+    "token": "8K68PO",
+    "voto": "SIM",
+    "data": "2026-03-08T21:15:26.803Z"
+  },
+  {
+    "token": "8K68PO",
+    "voto": "SIM",
+    "data": "2026-03-08T21:15:36.881Z"
+  },
+  {
+    "token": "4RR49K",
+    "voto": "SIM",
+    "data": "2026-03-10T20:10:49.122Z"
+  },
+  {
+    "token": "4RR49K",
+    "voto": "SIM",
+    "data": "2026-03-10T20:10:52.907Z"
+  },
+  {
+    "token": "4RR49K",
+    "voto": "SIM",
+    "data": "2026-03-10T20:11:13.372Z"
+  },
+  {
+    "token": "S32SXF",
+    "voto": "SIM",
+    "data": "2026-03-10T20:41:40.041Z"
+  },
+  {
+    "token": "S32SXF",
+    "voto": "SIM",
+    "data": "2026-03-10T20:41:40.346Z"
+  },
+  {
+    "token": "S32SXF",
+    "voto": "SIM",
+    "data": "2026-03-10T20:41:44.543Z"
+  },
+  {
+    "token": "S32SXF",
+    "voto": "NAO",
+    "data": "2026-03-10T20:44:04.208Z"
+  },
+  {
+    "token": "S32SXF",
+    "voto": "SIM",
+    "data": "2026-03-10T20:55:17.015Z"
+  },
+  {
+    "token": "S32SXF",
+    "voto": "SIM",
+    "data": "2026-03-10T20:55:31.102Z"
+  },
+  {
+    "token": "S32SXF",
+    "voto": "SIM",
+    "data": "2026-03-10T21:01:20.631Z"
+  },
+  {
+    "token": "S32SXF",
+    "voto": "SIM",
+    "data": "2026-03-10T21:01:25.969Z"
+  },
+  {
+    "token": "S32SXF",
+    "voto": "SIM",
+    "data": "2026-03-10T21:01:34.656Z"
+  },
+  {
+    "token": "MNO7XS",
+    "voto": "SIM",
+    "data": "2026-03-10T21:22:00.055Z"
+  },
+  {
+    "token": "MNO7XS",
+    "voto": "SIM",
+    "data": "2026-03-10T21:22:03.816Z"
+  },
+  {
+    "token": "MNO7XS",
+    "voto": "SIM",
+    "data": "2026-03-10T21:22:06.020Z"
+  },
+  {
+    "token": "MNO7XS",
+    "voto": "SIM",
+    "data": "2026-03-10T21:22:16.514Z"
+  },
+  {
+    "token": "MNO7XS",
+    "voto": "SIM",
+    "data": "2026-03-10T21:22:31.264Z"
+  },
+  {
+    "token": "MNO7XS",
+    "voto": "SIM",
+    "data": "2026-03-10T21:22:51.743Z"
+  },
+  {
+    "token": "MNO7XS",
+    "voto": "SIM",
+    "data": "2026-03-10T21:22:55.844Z"
+  },
+  {
+    "token": "MNO7XS",
+    "voto": "SIM",
+    "data": "2026-03-10T21:22:57.380Z"
+  },
+  {
+    "token": null,
+    "voto": "SIM",
+    "data": "2026-03-11T21:38:48.602Z"
+  },
+  {
+    "token": null,
+    "voto": "SIM",
+    "data": "2026-03-11T21:38:58.941Z"
+  },
+  {
+    "token": "H6KKXF",
+    "voto": "SIM",
+    "data": "2026-03-11T21:45:27.702Z"
+  }
+]

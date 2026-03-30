@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+
+<meta charset="UTF-8">
+<title>Moradores</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body { background:#f4f6f9; }
+
+.card {
+border-radius:14px;
+border:none;
+box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+.table thead {
+background:#0d6efd;
+color:white;
+}
+
+.total {
+font-weight:bold;
+font-size:18px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container mt-4">
+
+<div class="card p-4">
+
+<h4 class="mb-3">Importar Moradores</h4>
+
+<input type="file" id="csvFile" accept=".csv" class="form-control mb-3">
+
+<button class="btn btn-primary mb-3" onclick="importarCSV()">
+Importar moradores
+</button>
+
+<table class="table table-hover">
+
+<thead>
+
+<tr>
+<th>Unidade</th>
+<th>Nome</th>
+<th>Quotité</th>
+</tr>
+
+</thead>
+
+<tbody id="tabelaMoradoresBody"></tbody>
+
+</table>
+
+<div class="d-flex justify-content-between align-items-center mt-3">
+
+<div class="total">
+Total Quotités: <span id="totalQuotites">0</span>
+</div>
+
+<button class="btn btn-success" onclick="irPresencas()">
+Avançar para Presença
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const assembleiaId = params.get("assembleiaId") || "1";
+
+let moradores = [];
+
+
+function importarCSV(){
+
+const input = document.getElementById("csvFile");
+
+if(input.files.length === 0){
+
+alert("Selecione um arquivo CSV");
+
+return;
+
+}
+
+const file = input.files[0];
+
+const reader = new FileReader();
+
+
+reader.onload = function(event){
+
+let text = event.target.result;
+
+let delimiter = ",";
+
+if(text.includes(";")) delimiter = ";";
+
+
+const linhas = text.split(/\r?\n/).filter(l => l.trim() !== "");
+
+if(linhas.length < 2){
+
+alert("Arquivo CSV inválido");
+
+return;
+
+}
+
+moradores = [];
+
+let total = 0;
+
+
+for(let i=1;i<linhas.length;i++){
+
+const colunas = linhas[i].split(delimiter);
+
+if(colunas.length < 3) continue;
+
+
+const unidade = colunas[0].replace(/"/g,"").trim();
+
+const nome = colunas[1].replace(/"/g,"").trim();
+
+let quotite = colunas[2]
+.replace(/"/g,"")
+.replace(",",".")
+.trim();
+
+
+quotite = parseFloat(quotite);
+
+if(isNaN(quotite)) quotite = 0;
+
+
+moradores.push({
+
+assembleiaId:Number(assembleiaId),
+unidade,
+nome,
+quotite
+
+});
+
+total += quotite;
+
+}
+
+
+mostrarTabela();
+
+document.getElementById("totalQuotites").innerText = total.toFixed(2);
+
+localStorage.setItem("moradores_"+assembleiaId, JSON.stringify(moradores));
+
+};
+
+
+reader.readAsText(file,"ISO-8859-1");
+
+}
+
+
+
+function mostrarTabela(){
+
+const tabela = document.getElementById("tabelaMoradoresBody");
+
+tabela.innerHTML = "";
+
+moradores.forEach(m => {
+
+const tr = document.createElement("tr");
+
+tr.innerHTML = `
+<td>${m.unidade}</td>
+<td>${m.nome}</td>
+<td>${m.quotite}</td>
+`;
+
+tabela.appendChild(tr);
+
+});
+
+}
+
+
+function irPresencas(){
+
+if(moradores.length === 0){
+
+alert("Importe os moradores primeiro");
+
+return;
+
+}
+
+window.location.href = "presencas.html?assembleiaId=" + assembleiaId;
+
+}
+
+</script>
+
+</body>
+</html>

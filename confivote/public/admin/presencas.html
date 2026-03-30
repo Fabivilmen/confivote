@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Presenças</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+canvas{
+  border:1px solid #ccc;
+  border-radius:6px;
+}
+.status{
+  font-weight:bold;
+  text-align:center;
+}
+.P{color:green;}
+.R{color:orange;}
+.A{color:#999;}
+</style>
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-4">
+
+<h3>Lista de Presença</h3>
+
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Unidade</th>
+<th>Nome</th>
+<th>Quotité</th>
+<th>Status</th>
+<th>Presente</th>
+<th>Representado por</th>
+<th>Assinatura</th>
+</tr>
+</thead>
+
+<tbody id="tbody"></tbody>
+
+</table>
+
+<button class="btn btn-success" id="btnSalvar">Salvar e gerar tokens</button>
+
+</div>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const assembleiaId = params.get("assembleiaId");
+
+const tbody = document.getElementById("tbody");
+
+/* CARREGAR MORADORES */
+async function carregar(){
+
+  try{
+
+    const resp = await fetch("/api/moradores/" + assembleiaId);
+
+    if(!resp.ok){
+      throw new Error("Erro ao buscar moradores");
+    }
+
+    const moradores = await resp.json();
+
+    tbody.innerHTML = "";
+
+    if(!moradores || moradores.length === 0){
+      tbody.innerHTML = "<tr><td colspan='7'>Nenhum morador encontrado</td></tr>";
+      return;
+    }
+
+    moradores.forEach(m => {
+
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${m.unidade}</td>
+        <td>${m.nome}</td>
+        <td>${m.quotite}</td>
+        <td class="status A">A</td>
+        <td><input type="checkbox" class="chk"></td>
+        <td><input class="form-control rep" placeholder="Ex: 01A"></td>
+        <td>
+          <canvas width="120" height="40"></canvas><br>
+          <button class="btn btn-sm btn-danger limpar">Limpar</button>
+        </td>
+      `;
+
+      tbody.appendChild(tr);
+
+      const chk = tr.querySelector(".chk");
+      const rep = tr.querySelector(".rep");
+      const status = tr.querySelector(".status");
+      const canvas = tr.querySelector("canvas");
+      const btnLimpar = tr.querySelector(".limpar");
+
+      const ctx = canvas.getContext("2d");
+
+      let desenhando = false;
+
+      canvas.addEventListener("mousedown", () => desenhando = true);
+      canvas.addEventListener("mouseup", () => desenhando = false);
+      canvas.addEventListener("mousemove", e => {
+        if(!desenhando) return;
+        const rect = canvas.getBoundingClientRect();
+        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        ctx.stroke();
+      });
+
+      btnLimpar.onclick = () => {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+      };
+
+      function atualizar(){
+
+        if(rep.value.trim() !== ""){
+          chk.checked = false;
+          chk.disabled = true;
+
+          status.textContent = "R";
+          status.className = "status R";
+
+        } else if(chk.checked){
+
+          rep.value = "";
+          rep.disabled = true;
+
+          status.textContent = "P";
+          status.className = "status P";
+
+        } else {
+
+          chk.disabled = false;
+          rep.disabled = false;
+
+          status.textContent = "A";
+          status.className = "status A";
+        }
+      }
+
+      chk.addEventListener("change", atualizar);
+      rep.addEventListener("input", atualizar);
+
+    });
+
+  }catch(err){
+    console.error("Erro:", err);
+    tbody.innerHTML = "<tr><td colspan='7'>Erro ao carregar moradores</td></tr>";
+  }
+}
+
+carregar();
+
+/* SALVAR */
+async function salvar(){
+
+  const linhas = document.querySelectorAll("#tbody tr");
+  const dados = [];
+
+  linhas.forEach(l => {
+
+    if(!l.children[0]) return;
+
+    const unidade = l.children[0].innerText;
+    const nome = l.children[1].innerText;
+    const quotite = Number(l.children[2].innerText);
+
+    const presente = l.querySelector(".chk")?.checked || false;
+
+    const representadoPor = (
+      l.querySelector(".rep")?.value || ""
+    ).trim().toUpperCase();
+
+    dados.push({
+      assembleiaId: Number(assembleiaId),
+      unidade,
+      nome,
+      quotite,
+      presente,
+      representadoPor
+    });
+
+  });
+
+  await fetch("/api/presencas",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify(dados)
+  });
+
+  window.location.href = "/admin/tokens.html?assembleiaId=" + assembleiaId;
+
+}
+
+document.getElementById("btnSalvar").addEventListener("click", salvar);
+
+</script>
+
+</body>
+</html>

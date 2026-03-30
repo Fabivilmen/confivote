@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1772136595397,
+    "assembleiaId": 4,
+    "titulo": "Pauta 1",
+    "descricao": "",
+    "maioria": "simples",
+    "status": "fechada"
+  },
+  {
+    "id": 1772136595398,
+    "assembleiaId": 4,
+    "titulo": "Pauta 2",
+    "descricao": "",
+    "maioria": "simples",
+    "status": "fechada"
+  },
+  {
+    "id": 1772137119129,
+    "assembleiaId": 5,
+    "titulo": "Pauta 1",
+    "descricao": "",
+    "maioria": "simples",
+    "status": "aberta"
+  },
+  {
+    "id": 1772137119130,
+    "assembleiaId": 5,
+    "titulo": "Pauta 2",
+    "descricao": "",
+    "maioria": "simples",
+    "status": "fechada"
+  },
+  {
+    "id": 1774902693809,
+    "numero": 1,
+    "assembleiaId": 1,
+    "titulo": "jardim ",
+    "descricao": "",
+    "maioria": "unanimidade",
+    "status": "fechada"
+  },
+  {
+    "id": 1774902693812,
+    "numero": 2,
+    "assembleiaId": 1,
+    "titulo": "luzes ",
+    "descricao": "",
+    "maioria": "unanimidade",
+    "status": "fechada"
+  }
+]

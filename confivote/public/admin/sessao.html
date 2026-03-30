@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Sessão da Assembleia</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body { background: #f5f6fa; }
+.card { border-radius: 12px; }
+</style>
+</head>
+<body>
+
+<div class="container py-4">
+
+<div class="card p-4 mb-4">
+  <h3>Sessão da Assembleia</h3>
+
+  <div class="row mb-3">
+    <div class="col">
+      <label>Presidente</label>
+      <input id="presidente" class="form-control">
+    </div>
+    <div class="col">
+      <label>Secretário</label>
+      <input id="secretario" class="form-control">
+    </div>
+    <div class="col">
+      <label>Síndic</label>
+      <input id="sindico" class="form-control">
+    </div>
+  </div>
+
+  <button class="btn btn-success w-100 mb-2" onclick="abrirSessao()">Abrir Sessão</button>
+  <div id="horaInicio"></div>
+
+  <!-- NOVO BOTÃO -->
+  <button class="btn btn-danger w-100 mt-2" onclick="encerrarSessao()">Encerrar Sessão</button>
+  <div id="horaEncerramento"></div>
+
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h4>Pautas</h4>
+
+  <button class="btn btn-dark" onclick="gerarAta()">
+    Gerar ATA (PDF)
+  </button>
+</div>
+
+<div id="listaPautas"></div>
+
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const assembleiaId = params.get("assembleiaId") || 1;
+
+// ABRIR SESSÃO
+function abrirSessao(){
+  const hora = new Date().toLocaleTimeString();
+
+  document.getElementById("horaInicio").innerText =
+    "Início da sessão: " + hora;
+
+  localStorage.setItem("horaInicio_" + assembleiaId, hora);
+}
+
+// ENCERRAR SESSÃO
+function encerrarSessao(){
+  const hora = new Date().toLocaleTimeString();
+
+  document.getElementById("horaEncerramento").innerText =
+    "Encerramento da sessão: " + hora;
+
+  localStorage.setItem("horaEncerramento_" + assembleiaId, hora);
+}
+
+// GERAR ATA
+function gerarAta(){
+  const inicio = localStorage.getItem("horaInicio_" + assembleiaId);
+  const fim = localStorage.getItem("horaEncerramento_" + assembleiaId);
+
+  if(!inicio){
+    alert("Abra a sessão antes de gerar a ATA");
+    return;
+  }
+
+  if(!fim){
+    alert("Encerrar a sessão antes de gerar a ATA");
+    return;
+  }
+
+  const url =
+    window.location.origin +
+    "/api/ata/pdf?assembleiaId=" +
+    assembleiaId +
+    "&inicio=" + encodeURIComponent(inicio) +
+    "&fim=" + encodeURIComponent(fim);
+
+  window.open(url, "_blank");
+}
+
+// PAUTAS
+async function carregarPautas(){
+  try{
+    const resp = await fetch("/api/pautas/" + assembleiaId);
+    const pautas = await resp.json();
+
+    const div = document.getElementById("listaPautas");
+    div.innerHTML = "";
+
+    if(!Array.isArray(pautas) || pautas.length === 0){
+      div.innerHTML = "<div>Nenhuma pauta encontrada</div>";
+      return;
+    }
+
+    pautas.forEach(p => {
+      const el = document.createElement("div");
+
+      el.innerHTML = `
+        <div class="card p-3 mb-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <b>${p.numero}. ${p.titulo}</b>
+              <div>${p.descricao || ""}</div>
+              <small>Status: ${p.status}</small>
+            </div>
+            <div>
+              <button class="btn btn-success btn-sm" onclick="abrirPauta(${p.numero})">Abrir</button>
+              <button class="btn btn-danger btn-sm" onclick="encerrarPauta(${p.numero})">Encerrar</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      div.appendChild(el);
+    });
+
+  }catch(e){
+    console.error("ERRO AO CARREGAR PAUTAS:", e);
+    document.getElementById("listaPautas").innerHTML =
+      "<div class='text-danger'>Erro ao carregar pautas</div>";
+  }
+}
+
+async function abrirPauta(numero){
+  await fetch("/api/pautas/abrir/" + numero + "?assembleiaId=" + assembleiaId, {
+    method: "POST"
+  });
+  carregarPautas();
+}
+
+async function encerrarPauta(numero){
+  await fetch("/api/pautas/encerrar/" + numero + "?assembleiaId=" + assembleiaId, {
+    method: "POST"
+  });
+  carregarPautas();
+}
+
+carregarPautas();
+setInterval(carregarPautas, 3000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+[
+  {
+    "id": 8,
+    "condominio": "Rainha",
+    "data": "2026-03-25",
+    "hora": "18:00",
+    "local": "escritorio",
+    "status": "aberta",
+    "pautas": [
+      {
+        "id": 1,
+        "titulo": "luzes",
+        "descricao": "",
+        "maioria": "unanimidade"
+      },
+      {
+        "id": 2,
+        "titulo": "portas",
+        "descricao": "",
+        "maioria": "unanimidade"
+      },
+      {
+        "id": 3,
+        "titulo": "escadas",
+        "descricao": "",
+        "maioria": "unanimidade"
+      }
+    ]
+  }
+]

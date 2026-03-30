@@ -1,0 +1,142 @@
+<h1 style="color:red">VERSÃO CORRETA</h1>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ConfiVote • Convocação</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body{background:#f4f6f9}
+.card{border:none;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+textarea{min-height:140px}
+.topbar{
+  background:linear-gradient(90deg,#0d6efd,#1e3a8a);
+  color:#fff;
+  padding:18px 0;
+  margin-bottom:20px
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+  <div class="container">
+    <h4 class="fw-bold mb-0">ConfiVote • Convocação de Assembleia</h4>
+  </div>
+</div>
+
+<div class="container" style="max-width:980px">
+
+<div class="card p-4">
+
+<div class="row g-3">
+
+<div class="col-md-8">
+<label class="form-label">Condomínio</label>
+<input id="condominio" class="form-control">
+</div>
+
+<div class="col-md-4">
+<label class="form-label">Tipo de AG</label>
+<select id="tipoAg" class="form-select">
+<option value="AGE">AGE</option>
+<option value="AGO">AGO</option>
+<option value="AG EXTRAORDINÁRIA">AG EXTRAORDINÁRIA</option>
+<option value="AG ORDINÁRIA">AG ORDINÁRIA</option>
+</select>
+</div>
+
+<div class="col-md-4">
+<label class="form-label">Data</label>
+<input id="data" type="date" class="form-control">
+</div>
+
+<div class="col-md-4">
+<label class="form-label">Hora</label>
+<input id="hora" type="time" class="form-control">
+</div>
+
+<div class="col-md-4">
+<label class="form-label">Local</label>
+<input id="local" class="form-control">
+</div>
+
+<div class="col-md-12">
+<label class="form-label">Syndic</label>
+<input id="sindic" class="form-control">
+</div>
+
+<div class="col-md-12">
+<label class="form-label">Convidados</label>
+<input id="convidados" class="form-control">
+</div>
+
+<div class="col-md-12">
+<label class="form-label">Texto da convocação</label>
+<textarea id="texto" class="form-control"></textarea>
+</div>
+
+<div class="col-md-12">
+<label class="form-label">Ordem do dia (uma por linha)</label>
+<textarea id="ordem" class="form-control"></textarea>
+</div>
+
+<div class="col-md-12">
+<label class="form-label">Pautas (uma por linha)</label>
+<textarea id="pautas" class="form-control"></textarea>
+</div>
+
+</div>
+
+<button id="salvar" class="btn btn-primary w-100 mt-4">
+Salvar e ir para moradores
+</button>
+
+</div>
+</div>
+
+<script>
+
+function linhas(v){
+  return (v||"").split("\n").map(x=>x.trim()).filter(Boolean);
+}
+
+document.getElementById("salvar").onclick = () => {
+
+const id = Date.now();
+
+const pautasFormatadas = linhas(pautas.value).map((p,i)=>({
+numero: i+1,
+titulo: "Pauta",
+descricao: p,
+texto: (i+1)+" – Pauta – "+p
+}));
+
+const assembleia = {
+id,
+condominio: condominio.value,
+tipoAg: tipoAg.value,
+data: data.value,
+hora: hora.value,
+local: local.value,
+sindic: sindic.value,
+convidados: convidados.value,
+textoConvocacao: texto.value,
+ordemDia: linhas(ordem.value),
+pautas: pautasFormatadas
+};
+
+localStorage.setItem("confivote_assembleia_"+id, JSON.stringify(assembleia));
+
+location.href = "moradores.html?assembleiaId="+id;
+};
+
+</script>
+
+</body>
+</html>
+

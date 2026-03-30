@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "numero": 1,
+    "assembleiaId": 1,
+    "titulo": "Portas",
+    "descricao": "Troca de portas",
+    "maioria": "simples",
+    "status": "fechada"
+  },
+  {
+    "id": 2,
+    "numero": 2,
+    "assembleiaId": 1,
+    "titulo": "Escadas",
+    "descricao": "Reforma das escadas",
+    "maioria": "simples",
+    "status": "fechada"
+  }
+]

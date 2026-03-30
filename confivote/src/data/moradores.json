@@ -1,0 +1,9 @@
+[
+  { "assembleiaId": 1, "unidade": "01A", "nome": "Ana Silva", "quotite": 125000 },
+  { "assembleiaId": 1, "unidade": "02B", "nome": "Maria Souza", "quotite": 132000 },
+  { "assembleiaId": 1, "unidade": "03C", "nome": "Carlos Lima", "quotite": 98000 },
+  { "assembleiaId": 1, "unidade": "04A", "nome": "Fernanda Rocha", "quotite": 110000 },
+  { "assembleiaId": 1, "unidade": "05B", "nome": "João Ferreira", "quotite": 102000 },
+  { "assembleiaId": 1, "unidade": "06C", "nome": "Juliana Martins", "quotite": 118000 },
+  { "assembleiaId": 1, "unidade": "07A", "nome": "Roberto Costa", "quotite": 95000 }
+]
