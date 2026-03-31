@@ -8,10 +8,34 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-canvas{
-  border:1px solid #ccc;
-  border-radius:6px;
+
+/* FUNDO PADRÃO */
+body {
+  background: linear-gradient(135deg, #e0f2fe, #dbeafe, #bfdbfe);
 }
+
+/* CARD */
+.card {
+  border-radius:18px;
+  border:none;
+  background: rgba(255,255,255,0.95);
+  box-shadow:0 20px 40px rgba(0,0,0,0.15);
+}
+
+/* TÍTULO */
+h3 {
+  color:#1e3a8a;
+  font-weight:800;
+  text-align:center;
+}
+
+/* TABELA */
+.table thead {
+  background:#1e3a8a;
+  color:white;
+}
+
+/* STATUS */
 .status{
   font-weight:bold;
   text-align:center;
@@ -19,16 +43,42 @@ canvas{
 .P{color:green;}
 .R{color:orange;}
 .A{color:#999;}
+
+/* CANVAS */
+canvas{
+  border:1px solid #ccc;
+  border-radius:8px;
+  background:#fff;
+}
+
+/* BOTÕES */
+.btn-success {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border:none;
+}
+
+.btn-danger {
+  border-radius:8px;
+}
+
 </style>
 </head>
 
-<body class="bg-light">
+<body>
 
 <div class="container mt-4">
 
-<h3>Lista de Presença</h3>
+<!-- LOGO -->
+<div class="text-center mb-3">
+  <img src="/img/logo-confivote.png" style="width:90px;">
+</div>
 
-<table class="table table-bordered">
+<div class="card p-4">
+
+<h3 class="mb-4">Lista de Presença</h3>
+
+<table class="table table-bordered align-middle">
+
 <thead>
 <tr>
 <th>Unidade</th>
@@ -45,7 +95,13 @@ canvas{
 
 </table>
 
-<button class="btn btn-success" id="btnSalvar">Salvar e gerar tokens</button>
+<div class="text-end mt-3">
+<button class="btn btn-success" id="btnSalvar">
+Salvar e gerar tokens
+</button>
+</div>
+
+</div>
 
 </div>
 

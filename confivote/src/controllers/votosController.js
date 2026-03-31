@@ -5,42 +5,50 @@ const votosPath = path.join(__dirname, "../../data/votos.json");
 const tokensPath = path.join(__dirname, "../../data/tokens.json");
 
 // =========================
+// FUNÇÃO AUXILIAR
+// =========================
+function lerJson(filePath) {
+  if (!fs.existsSync(filePath)) return [];
+  let raw = fs.readFileSync(filePath, "utf-8");
+  raw = raw.replace(/^\uFEFF/, "").trim();
+  if (!raw) return [];
+  return JSON.parse(raw);
+}
+
+function salvarJson(filePath, data) {
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+}
+
+// =========================
 // REGISTRAR VOTO
 // =========================
 exports.registrarVoto = (req, res) => {
   try {
-    const { assembleiaId, pautaId, token, voto } = req.body;
+    const { assembleiaId, pautaId, pautaNumero, token, voto } = req.body;
 
-    if (!assembleiaId || !pautaId || !token || !voto) {
-      return res.status(400).json({ ok: false });
+    if (!assembleiaId || !token || !voto) {
+      return res.status(400).json({ ok: false, erro: "Dados inválidos" });
     }
 
-    let votos = [];
-    if (fs.existsSync(votosPath)) {
-      const conteudo = fs.readFileSync(votosPath, "utf-8");
-      votos = conteudo ? JSON.parse(conteudo) : [];
-    }
+    const votos = lerJson(votosPath);
+    const tokens = lerJson(tokensPath);
 
-    // impedir voto duplicado
-    const jaVotou = votos.find(
-      v =>
-        String(v.assembleiaId) === String(assembleiaId) &&
-        String(v.pautaId) === String(pautaId) &&
-        v.token === token
+    // impedir duplicidade (mesmo token na mesma pauta)
+    const jaVotou = votos.find(v =>
+      String(v.assembleiaId) === String(assembleiaId) &&
+      (String(v.pautaId) === String(pautaId) ||
+       String(v.pautaNumero) === String(pautaNumero)) &&
+      v.token === token
     );
 
     if (jaVotou) {
       return res.status(400).json({ ok: false, erro: "Token já votou nesta pauta" });
     }
 
-    // pegar peso do token
-    let tokens = [];
-    if (fs.existsSync(tokensPath)) {
-      const conteudoTokens = fs.readFileSync(tokensPath, "utf-8");
-      tokens = conteudoTokens ? JSON.parse(conteudoTokens) : [];
-    }
-
-    const tokenObj = tokens.find(t => t.token === token);
+    // buscar token
+    const tokenObj = tokens.find(t =>
+      t.token === token || t.codigo === token
+    );
 
     if (!tokenObj) {
       return res.status(400).json({ ok: false, erro: "Token inválido" });
@@ -49,14 +57,15 @@ exports.registrarVoto = (req, res) => {
     votos.push({
       id: Date.now(),
       assembleiaId,
-      pautaId,
+      pautaId: pautaId || null,
+      pautaNumero: pautaNumero || null,
       token,
       voto: voto.toUpperCase(),
-      peso: tokenObj.peso,
+      peso: Number(tokenObj.peso) || 1,
       createdAt: new Date().toISOString()
     });
 
-    fs.writeFileSync(votosPath, JSON.stringify(votos, null, 2));
+    salvarJson(votosPath, votos);
 
     res.json({ ok: true });
 
@@ -67,20 +76,38 @@ exports.registrarVoto = (req, res) => {
 };
 
 // =========================
+// LISTAR TODOS OS VOTOS DA ASSEMBLEIA
+// =========================
+exports.listarVotos = (req, res) => {
+  try {
+    const { assembleiaId } = req.query;
+
+    const votos = lerJson(votosPath);
+
+    const filtrados = votos.filter(v =>
+      String(v.assembleiaId) === String(assembleiaId)
+    );
+
+    res.json(filtrados);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json([]);
+  }
+};
+
+// =========================
 // LISTAR VOTOS POR PAUTA
 // =========================
 exports.listarVotosPorPauta = (req, res) => {
   try {
     const { pautaId } = req.params;
 
-    if (!fs.existsSync(votosPath)) {
-      return res.json({ ok: true, dados: [] });
-    }
+    const votos = lerJson(votosPath);
 
-    const conteudo = fs.readFileSync(votosPath, "utf-8");
-    const votos = conteudo ? JSON.parse(conteudo) : [];
-
-    const filtrados = votos.filter(v => String(v.pautaId) === String(pautaId));
+    const filtrados = votos.filter(v =>
+      String(v.pautaId) === String(pautaId)
+    );
 
     res.json({ ok: true, dados: filtrados });
 
@@ -89,6 +116,7 @@ exports.listarVotosPorPauta = (req, res) => {
     res.status(500).json({ ok: false });
   }
 };
+
 // =========================
 // VALIDAR TOKEN
 // =========================
@@ -100,14 +128,11 @@ exports.validarToken = (req, res) => {
       return res.json({ valido: false });
     }
 
-    if (!fs.existsSync(tokensPath)) {
-      return res.json({ valido: false });
-    }
+    const tokens = lerJson(tokensPath);
 
-    const conteudo = fs.readFileSync(tokensPath, "utf-8");
-    const tokens = conteudo ? JSON.parse(conteudo) : [];
-
-    const encontrado = tokens.find(t => t.codigo === token);
+    const encontrado = tokens.find(t =>
+      t.codigo === token || t.token === token
+    );
 
     if (!encontrado) {
       return res.json({ valido: false });

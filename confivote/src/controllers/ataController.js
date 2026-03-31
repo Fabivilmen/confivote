@@ -13,41 +13,45 @@ function readJson(file) {
   return JSON.parse(raw);
 }
 
+// RESULTADO COM PERCENTUAL REAL
 function calcularResultado(sim, nao) {
-  if (sim > nao) return "APROVADO";
-  if (nao > sim) return "REPROVADO";
-  return "EMPATE";
+  const total = sim + nao;
+
+  if (total === 0) return "SEM VOTOS";
+
+  const percSim = (sim / total) * 100;
+
+  if (percSim >= 50) return `APROVADO (${percSim.toFixed(1)}%)`;
+  return `REPROVADO (${percSim.toFixed(1)}%)`;
 }
 
 function montarDadosAta(assembleiaId) {
   const assembleias = readJson("assembleias.json");
   const pautas = readJson("pautas.json");
   const votos = readJson("votos.json");
-  const tokens = readJson("tokens.json");
 
   const assembleia = assembleias.find(a => String(a.id) === String(assembleiaId));
   if (!assembleia) return null;
 
   const votosAG = votos.filter(v => String(v.assembleiaId) === String(assembleiaId));
   const pautasAG = pautas.filter(p => String(p.assembleiaId) === String(assembleiaId));
-  const tokensAG = tokens.filter(t => String(t.assembleiaId) === String(assembleiaId));
-
-  const totalPeso = tokensAG.reduce((s, t) => s + Number(t.peso || 0), 0);
 
   const resultados = pautasAG.map(p => {
     const vp = votosAG.filter(v =>
-      String(v.pautaId) === String(p.id) ||
       String(v.pautaNumero) === String(p.numero)
     );
 
     let sim = 0, nao = 0, abst = 0;
 
-    vp.forEach(v => {
-      const token = tokensAG.find(t =>
-        t.token === v.token || t.codigo === v.token
-      );
+    const tokensJaContados = new Set();
 
-      const peso = token ? Number(token.peso) : 0;
+    vp.forEach(v => {
+
+      // evita duplicidade por token
+      if (tokensJaContados.has(v.token)) return;
+      tokensJaContados.add(v.token);
+
+      const peso = Number(v.peso) || 1;
       const vv = String(v.voto).toUpperCase();
 
       if (vv === "SIM") sim += peso;
@@ -55,7 +59,8 @@ function montarDadosAta(assembleiaId) {
       else abst += peso;
     });
 
-    const percentual = totalPeso ? ((sim / totalPeso) * 100).toFixed(2) : 0;
+    const total = sim + nao + abst;
+    const percentual = total ? ((sim / total) * 100).toFixed(2) : 0;
 
     return {
       ...p,
@@ -65,37 +70,47 @@ function montarDadosAta(assembleiaId) {
     };
   });
 
-  return { assembleia, resultados, totalPeso };
+  return { assembleia, resultados };
 }
 
 exports.getAtaPdf = (req, res) => {
   const { assembleiaId } = req.query;
 
-  // 🔥 PEGA HORAS DO FRONT
   const inicio = req.query.inicio || "-";
   const fim = req.query.fim || "-";
+
+  const observacoes = req.query.observacoes || "";
+  const proximaAG = req.query.proximaAG || "";
+  const presidente = req.query.presidente || "";
+  const secretario = req.query.secretario || "";
+  const sindico = req.query.sindico || "";
 
   const dados = montarDadosAta(assembleiaId);
   if (!dados) return res.status(404).send("Assembleia não encontrada");
 
   res.setHeader("Content-Type", "application/pdf");
-  res.setHeader("Content-Disposition", "inline; filename=ata.pdf");
 
   const doc = new PDFDocument({ margin: 50 });
   doc.pipe(res);
+  const logoPath = path.join(__dirname, "../../public/img/logo-confivote.png");
 
-  // TÍTULO
+if (fs.existsSync(logoPath)) {
+  doc.image(logoPath, {
+    fit: [120, 120],
+    align: "center"
+  });
+  doc.moveDown();
+}
+
   doc
     .fontSize(18)
     .fillColor("#0d6efd")
-    .text("ATA DA ASSEMBLEIA GERAL", { align: "center" });
-
+    .text("ATA DA ASSEMBLEIA GERAL DE COPROPRIEDADE", { align: "center" });
   doc.moveDown();
 
-  // DADOS
   doc.fontSize(11).fillColor("black");
 
-  doc.text(`Prédio: ${dados.assembleia.predio || "-"}`);
+  doc.text(`Copropriedade: ${dados.assembleia.predio || "-"}`);
   doc.text(`Data: ${dados.assembleia.data || "-"}`);
   doc.text(`Local: ${dados.assembleia.local || "-"}`);
   doc.text(`Início da sessão: ${inicio}`);
@@ -103,16 +118,13 @@ exports.getAtaPdf = (req, res) => {
 
   doc.moveDown();
 
-  // TEXTO INICIAL
   doc.text(
-    "Aos presentes, foi realizada a Assembleia Geral de Coproprietários, devidamente convocada nos termos legais. " +
-    "Após verificação do quórum necessário, os trabalhos foram iniciados e as pautas colocadas em votação conforme ordem do dia.",
+    "A Assembleia Geral de Coproprietários foi realizada conforme convocação regular. Após verificação do quórum, as pautas foram submetidas à votação.",
     { align: "justify" }
   );
 
   doc.moveDown();
 
-  // PAUTAS
   dados.resultados.forEach((r, i) => {
     doc
       .fontSize(13)
@@ -127,25 +139,26 @@ exports.getAtaPdf = (req, res) => {
       .text(`SIM: ${r.votos.sim}`)
       .text(`NÃO: ${r.votos.nao}`)
       .text(`ABSTENÇÃO: ${r.votos.abst}`)
-      .text(`Percentual de aprovação: ${r.percentual}%`)
+      .text(`Percentual: ${r.percentual}%`)
       .text(`Resultado: ${r.resultado}`);
 
     doc.moveDown();
   });
 
-  // ENCERRAMENTO
   doc.moveDown();
-  doc.text(
-    "Nada mais havendo a tratar, a sessão foi encerrada, sendo a presente ata lavrada e assinada.",
-    { align: "justify" }
-  );
+  doc.text("Observações:");
+  doc.text(observacoes || "Nenhuma.");
+
+  doc.moveDown();
+
+  doc.text("Pontos para próxima AG:");
+  doc.text(proximaAG || "Nenhum.");
 
   doc.moveDown(2);
 
-  // ASSINATURAS
-  doc.text("Presidente: ______________________________");
-  doc.text("Secretário: ______________________________");
-  doc.text("Syndic: ______________________________");
+  doc.text(`Presidente: ${presidente || "________________________"}`);
+  doc.text(`Secretário: ${secretario || "________________________"}`);
+  doc.text(`Syndic: ${sindico || "________________________"}`);
 
   doc.end();
 };

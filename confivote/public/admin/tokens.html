@@ -1,44 +1,104 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Tokens</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Tokens</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+/* FUNDO PADRÃO */
+body {
+  background: linear-gradient(135deg, #e0f2fe, #dbeafe, #bfdbfe);
+}
+
+/* CARD */
+.card {
+  border-radius:18px;
+  border:none;
+  background: rgba(255,255,255,0.95);
+  box-shadow:0 20px 40px rgba(0,0,0,0.15);
+}
+
+/* TÍTULO */
+h2, h4 {
+  color:#1e3a8a;
+  font-weight:800;
+}
+
+/* TABELA */
+.table thead {
+  background:#1e3a8a;
+  color:white;
+}
+
+/* BOTÕES */
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border:none;
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border:none;
+}
+
+/* QR */
+img {
+  border-radius:8px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+</style>
+
 </head>
 
-<body class="bg-light">
+<body>
 
-<div class="container mt-5">
-  <div class="card p-4 mx-auto" style="max-width: 900px;">
-    
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <div>
-        <h2>Tokens</h2>
-        <h4 id="tituloAssembleia"></h4>
-      </div>
-      <div class="d-flex gap-2">
-        <button class="btn btn-primary" id="btnGerar">Gerar tokens</button>
-        <a class="btn btn-success" id="btnSessao">Abrir Sessão</a>
-      </div>
-    </div>
+<div class="container mt-4">
 
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Unidade</th>
-          <th>Morador</th>
-          <th>Peso</th>
-          <th>Código</th>
-          <th>QR</th>
-          <th>Link</th>
-        </tr>
-      </thead>
+<!-- LOGO -->
+<div class="text-center mb-3">
+  <img src="/img/logo-confivote.png" style="width:90px;">
+</div>
 
-      <tbody id="tabelaTokens"></tbody>
-    </table>
+<div class="card p-4 mx-auto" style="max-width: 900px;">
 
-  </div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+<div>
+<h2>Tokens</h2>
+<h5 id="tituloAssembleia"></h5>
+</div>
+
+<div class="d-flex gap-2">
+<button class="btn btn-primary" id="btnGerar">Gerar tokens</button>
+<a class="btn btn-success" id="btnSessao">Abrir Sessão</a>
+</div>
+
+</div>
+
+<table class="table table-bordered align-middle">
+
+<thead>
+<tr>
+<th>Unidade</th>
+<th>Morador</th>
+<th>Peso</th>
+<th>Código</th>
+<th>QR</th>
+<th>Link</th>
+</tr>
+</thead>
+
+<tbody id="tabelaTokens"></tbody>
+
+</table>
+
+</div>
+
 </div>
 
 <script>
@@ -46,8 +106,11 @@
 const params = new URLSearchParams(window.location.search);
 const assembleiaId = Number(params.get("assembleiaId") || 1);
 
-document.getElementById("tituloAssembleia").textContent = "Assembleia ID: " + assembleiaId;
-document.getElementById("btnSessao").href = "/admin/sessao.html?assembleiaId=" + assembleiaId;
+document.getElementById("tituloAssembleia").textContent =
+"Assembleia ID: " + assembleiaId;
+
+document.getElementById("btnSessao").href =
+"/admin/sessao.html?assembleiaId=" + assembleiaId;
 
 const tabela = document.getElementById("tabelaTokens");
 
@@ -70,7 +133,7 @@ async function carregarTokens() {
         <td>${t.morador}</td>
         <td><strong>${t.peso}</strong></td>
         <td><strong>${t.token}</strong></td>
-        <td><img src="${t.qrCode}" width="100"></td>
+        <td><img src="${t.qrCode}" width="90"></td>
         <td><a href="${t.url}" target="_blank">Abrir</a></td>
       </tr>
     `;

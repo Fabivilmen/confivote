@@ -30,23 +30,5 @@
     "descricao": "",
     "maioria": "simples",
     "status": "fechada"
-  },
-  {
-    "id": 1774902693809,
-    "numero": 1,
-    "assembleiaId": 1,
-    "titulo": "jardim ",
-    "descricao": "",
-    "maioria": "unanimidade",
-    "status": "fechada"
-  },
-  {
-    "id": 1774902693812,
-    "numero": 2,
-    "assembleiaId": 1,
-    "titulo": "luzes ",
-    "descricao": "",
-    "maioria": "unanimidade",
-    "status": "fechada"
   }
 ]

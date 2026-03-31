@@ -1,36 +1,134 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ConfiVote • Admin</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ConfiVote • Admin</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(135deg, #e0f2fe, #dbeafe, #bfdbfe);
+
+  font-family: system-ui;
+}
+
+.capa {
+  width: 100%;
+  max-width: 520px;
+  text-align: center;
+}
+
+/* CORRIGIDO AQUI */
+.topo {
+  color: #1e3a8a; /* azul profissional */
+  margin-bottom: 30px;
+}
+
+/* LOGO */
+.logo {
+  width: 140px;
+  margin-bottom: 15px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
+  filter: drop-shadow(0 10px 25px rgba(0,0,0,0.3));
+}
+
+.topo h1 {
+  font-weight: 900;
+  font-size: 36px;
+  margin: 5px 0;
+}
+
+.topo p {
+  margin: 0;
+  opacity: 0.8;
+  font-size: 15px;
+}
+
+/* CARD */
+.card {
+  border-radius: 20px;
+  border: none;
+
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+}
+
+.card-body {
+  padding: 40px 25px;
+}
+
+/* BEM-VINDO CORRIGIDO */
+h2 {
+  font-weight: 800;
+  margin-bottom: 25px;
+  color: #1e3a8a;
+}
+
+/* BOTÃO */
+.btn-custom {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  border-radius: 12px;
+  padding: 14px 30px;
+  font-weight: 700;
+  color: white;
+
+  box-shadow: 0 10px 20px rgba(34,197,94,0.3);
+  transition: 0.2s;
+}
+
+.btn-custom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 30px rgba(34,197,94,0.4);
+}
+
+</style>
 </head>
 
-<body class="bg-light">
-  <div class="container py-5">
-    <div class="text-center mb-4">
-      <div class="fw-bold">CV</div>
-      <h1 class="h3 mb-0">ConfiVote</h1>
-      <div class="text-muted">Votação condominial</div>
-    </div>
+<body>
 
-    <div class="card shadow-sm">
-      <div class="card-body p-4 text-center">
-        <h2 class="h4 mb-4">Bem-vindo</h2>
+<div class="capa">
 
-        <button class="btn btn-primary px-4" onclick="irParaAssembleia()">
-          Iniciar
-        </button>
+  <div class="topo">
 
-      </div>
+    <img src="/img/logo-confivote.png" class="logo">
+
+    <h1>ConfiVote</h1>
+    <p>Votação condominial</p>
+
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+
+      <h2>Bem-vindo</h2>
+
+      <button class="btn btn-custom" onclick="irParaAssembleia()">
+        Iniciar
+      </button>
+
     </div>
   </div>
 
-  <script>
-    function irParaAssembleia() {
-      window.location.href = window.location.origin + "/admin/assembleia.html";
-    }
-  </script>
+</div>
+
+<script>
+function irParaAssembleia() {
+  window.location.href = "/admin/assembleia.html";
+}
+</script>
+
 </body>
 </html>

@@ -1,9 +1,7 @@
 /* =========================================
-   ConfiVote - UI Base (Responsiva e lapidada)
-   (celular / tablet / PC)
+   ConfiVote - UI Moderna (Visual Premium)
    ========================================= */
 
-/* Reset e base */
 *,
 *::before,
 *::after {
@@ -11,18 +9,24 @@
 }
 
 :root {
-  --bg: #f4f6f9;
+  --bg: linear-gradient(135deg, #1e293b, #0f172a);
   --card-bg: #ffffff;
-  --text: #1f2937;
-  --muted: #5a6472;
-  --border: #e6e8ee;
-  --shadow: 0 16px 40px rgba(0, 0, 0, 0.10);
 
-  --primary: #0d6efd;         /* Bootstrap primary */
-  --primary-dark: #0b5ed7;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
 
   --radius: 18px;
   --radius-sm: 12px;
+
+  --shadow: 0 20px 50px rgba(0,0,0,0.25);
 
   --max-card: 520px;
 }
@@ -36,447 +40,210 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Layout principal */
+/* Layout */
 .app-screen {
   min-height: 100vh;
   display: flex;
   justify-content: center;
-
-  /* ✅ SUGESTÃO 1: sobe o card (mais “cara de app”) */
   align-items: flex-start;
-  padding-top: clamp(24px, 6vh, 64px);
 
-  /* respiro lateral (mobile e desktop) */
-  padding-left: clamp(16px, 3vw, 32px);
-  padding-right: clamp(16px, 3vw, 32px);
-  padding-bottom: clamp(16px, 3vw, 32px);
+  padding-top: clamp(30px, 6vh, 70px);
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 /* Card */
 .app-card {
   width: 100%;
   max-width: var(--max-card);
+
   background: var(--card-bg);
-  border: 1px solid var(--border);
   border-radius: var(--radius);
 
-  /* Padding responsivo */
-  padding: clamp(18px, 3.2vw, 30px);
+  padding: 26px;
 
   box-shadow: var(--shadow);
+
   text-align: center;
 
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 10px;
+  gap: 14px;
 }
 
 /* Logo */
 .app-logo {
-  width: clamp(64px, 8vw, 110px);
-  height: auto;
-  display: block;
-  margin: 0;
+  width: 90px;
 }
 
 /* Título */
 .app-title {
-  margin: 0;
   font-weight: 800;
-  letter-spacing: 0.2px;
-  line-height: 1.1;
-  font-size: clamp(22px, 3vw, 32px);
+  font-size: 28px;
 }
 
 /* Subtítulo */
 .app-subtitle {
-  margin: 0;
   color: var(--muted);
-  line-height: 1.35;
-  font-size: clamp(13px, 1.6vw, 16px);
+  font-size: 14px;
 }
 
 /* Box assembleia */
 .app-assembleia {
   width: 100%;
-  margin-top: 4px;
+  padding: 12px;
 
-  padding: 12px 14px;
   border-radius: var(--radius-sm);
-  border: 1px solid #dfe7ff;
-  background: #f3f7ff;
-
-  font-size: clamp(13px, 1.6vw, 15px);
-  line-height: 1.35;
-}
-
-#titulo-assembleia {
-  font-weight: 700;
-  display: inline-block;
-  margin-bottom: 2px;
-}
-
-/* ✅ SUGESTÃO 3: data mais discreta */
-#data-assembleia {
-  color: #6b7280;
-  opacity: 0.75;
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
 }
 
 /* Botão principal */
 .app-btn {
   width: 100%;
   border-radius: 14px;
-  padding: 14px 16px;
+  padding: 14px;
 
   font-weight: 700;
-  font-size: clamp(14px, 1.7vw, 16px);
+  font-size: 15px;
 
-  box-shadow: 0 10px 18px rgba(13, 110, 253, 0.18);
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  border: none;
+  color: white;
+
+  box-shadow: 0 10px 20px rgba(37,99,235,0.35);
+  transition: all 0.15s ease;
 }
 
-/* Ajustes Bootstrap (hover/focus) */
-.btn.btn-primary.app-btn {
-  background: var(--primary);
-  border-color: var(--primary);
+.app-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 26px rgba(37,99,235,0.45);
 }
 
-.btn.btn-primary.app-btn:hover {
-  background: var(--primary-dark);
-  border-color: var(--primary-dark);
-}
+/* ===== Pautas ===== */
 
-.btn.btn-primary.app-btn:focus {
-  outline: none;
-  box-shadow:
-    0 0 0 4px rgba(13, 110, 253, 0.20),
-    0 10px 18px rgba(13, 110, 253, 0.18);
-}
-
-/* Desktop grande: ajustes finos */
-@media (min-width: 992px) {
-  .app-card {
-    gap: 12px;
-  }
-  .app-assembleia {
-    padding: 14px 16px;
-  }
-}
-
-/* ✅ SUGESTÃO 2: botão ligeiramente menor em desktop muito grande */
-@media (min-width: 1200px) {
-  .app-btn {
-    padding: 12px 16px;
-  }
-}
-
-/* Mobile muito pequeno */
-@media (max-width: 360px) {
-  .app-card {
-    border-radius: 16px;
-  }
-  .app-btn {
-    padding: 12px 14px;
-  }
-}
-
-/* Acessibilidade: reduz animação se usuário preferir */
-@media (prefers-reduced-motion: no-preference) {
-  .app-card {
-    transition: transform 160ms ease, box-shadow 160ms ease;
-  }
-  .app-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 18px 46px rgba(0, 0, 0, 0.12);
-  }
-}
-/* ===== Extras para a tela votar.html ===== */
-
-.app-card-wide {
-  max-width: 720px;
-}
-
-.app-header {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  justify-content: center;
-  text-align: left;
-}
-
-.app-title-sm {
-  font-size: clamp(20px, 2.6vw, 28px);
-}
-
-.app-panel {
-  width: 100%;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: #fbfcff;
-  padding: 14px;
-}
-
-.app-input {
-  min-width: 240px;
-  flex: 1;
-}
-
-.app-btn-inline {
-  width: auto;
-  min-width: 140px;
-}
-
-.app-section-title {
-  width: 100%;
-  text-align: left;
-  font-size: clamp(16px, 2vw, 18px);
-  margin: 6px 0 0 0;
-  font-weight: 800;
-}
-
-.app-stack {
-  width: 100%;
-  display: grid;
-  gap: 12px;
-  margin-top: 10px;
-}
-
-/* Card de pauta */
 .app-pauta {
-  width: 100%;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: #fff;
+  border-radius: 14px;
+  background: #f8fafc;
   padding: 14px;
-  text-align: left;
+
+  border: 1px solid var(--border);
 }
 
 .app-pauta-title {
   font-weight: 800;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .app-pauta-desc {
   color: var(--muted);
   font-size: 14px;
-  margin-bottom: 10px;
 }
 
-/* Opções */
-.app-opcoes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.app-radio {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
+/* Status */
+.badge-status {
+  padding: 5px 10px;
   border-radius: 999px;
-  background: #fafbff;
-  cursor: pointer;
-  user-select: none;
-}
-
-.app-radio input {
-  accent-color: var(--primary);
-}
-
-.app-footer {
-  width: 100%;
-  margin-top: 8px;
-  text-align: center;
-}
-
-/* Responsivo */
-@media (max-width: 520px) {
-  .app-header {
-    flex-direction: column;
-    text-align: center;
-  }
-  .app-btn-inline {
-    width: 100%;
-  }
-}
-/* Sucesso */
-.success-icon {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto;
-  border-radius: 50%;
-  background: #22c55e;
-  color: white;
-  font-size: 36px;
+  font-size: 12px;
   font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
-/* =========================================
-   Votação - botões coloridos (Sim/Não/Abstenção)
-   ========================================= */
 
-.vote-screen {
-  width: 100%;
-  display: flex;
-  justify-content: center;
+.aberta {
+  background: #dcfce7;
+  color: #166534;
 }
+
+.fechada {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ===== Votação ===== */
 
 .vote-card {
-  width: 100%;
-  max-width: 420px;               /* “cara de app” */
-  padding: clamp(18px, 4vw, 28px);
+  max-width: 420px;
 }
 
-.vote-top {
-  display: grid;
-  gap: 8px;
-  justify-items: center;
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.vote-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  background: #eef3ff;
-  display: grid;
-  place-items: center;
-}
-
-.vote-icon img {
-  width: 26px;
-  height: 26px;
-}
-
-.vote-assembleia-title {
-  font-weight: 900;
-  font-size: clamp(18px, 2.3vw, 22px);
-  margin: 0;
-  line-height: 1.15;
-}
-
-.vote-assembleia-sub {
-  margin: 0;
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.vote-block {
-  width: 100%;
-  margin-top: 12px;
-  padding: 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: #fbfcff;
-}
-
-.vote-pauta-title {
-  font-weight: 900;
-  margin: 0 0 4px 0;
-  font-size: 16px;
-}
-
-.vote-pauta-desc {
-  margin: 0;
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.vote-majority {
-  margin-top: 8px;
-  font-size: 13px;
-  color: #6b7280;
-}
-
-.vote-label {
-  margin-top: 14px;
-  font-weight: 800;
-  text-align: center;
-}
-
-.vote-actions {
-  margin-top: 10px;
-  display: grid;
-  gap: 10px;
-}
-
-/* Botões grandes */
+/* Botões votação */
 .vote-btn {
   width: 100%;
   border: none;
   border-radius: 14px;
-  padding: 14px 14px;
-  font-weight: 900;
+  padding: 16px;
+
+  font-weight: 800;
   font-size: 16px;
   color: #fff;
-  box-shadow: 0 10px 18px rgba(0,0,0,0.10);
-  transition: transform 120ms ease, filter 120ms ease, box-shadow 120ms ease;
+
+  transition: all 0.15s ease;
+}
+
+.vote-btn:hover {
+  transform: translateY(-2px);
 }
 
 .vote-btn:active {
-  transform: translateY(1px);
+  transform: scale(0.96);
 }
 
-/* Cores */
-.vote-yes   { background: #22c55e; }
-.vote-no    { background: #ef4444; }
-.vote-abst  { background: #f59e0b; }
+/* SIM */
+.vote-yes {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  box-shadow: 0 10px 20px rgba(34,197,94,0.35);
+}
 
-/* Estado selecionado (destaque) */
+/* NÃO */
+.vote-no {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  box-shadow: 0 10px 20px rgba(239,68,68,0.35);
+}
+
+/* ABSTENÇÃO */
+.vote-abst {
+  background: linear-gradient(135deg, #d97706, #f59e0b);
+  box-shadow: 0 10px 20px rgba(245,158,11,0.35);
+}
+
+/* Selecionado */
 .vote-btn.is-selected {
-  filter: saturate(1.08) contrast(1.05);
-  box-shadow: 0 14px 26px rgba(0,0,0,0.14);
-  outline: 4px solid rgba(13,110,253,0.14);
+  outline: 4px solid rgba(255,255,255,0.4);
 }
 
-/* Área de token + envio */
+/* Painel */
 .vote-panel {
-  width: 100%;
   margin-top: 12px;
   padding: 14px;
+
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
-  background: #fff;
+  background: #ffffff;
 }
 
-.vote-row {
+/* Sucesso */
+.success-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--success);
+  color: #fff;
+
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 30px;
+  font-weight: bold;
 }
 
-.vote-row .form-control {
-  flex: 1;
-  min-width: 200px;
-  border-radius: 12px;
-}
+/* Responsivo */
+@media (max-width: 480px) {
+  .app-card {
+    padding: 18px;
+  }
 
-.vote-row .btn {
-  border-radius: 12px;
-  min-width: 140px;
-  font-weight: 800;
-}
-
-.vote-submit {
-  width: 100%;
-  border-radius: 14px;
-  padding: 14px 16px;
-  font-weight: 900;
-  font-size: 16px;
-}
-
-/* Mobile fino */
-@media (max-width: 360px) {
-  .vote-card { max-width: 100%; }
-  .vote-btn { font-size: 15px; padding: 13px; }
+  .vote-btn {
+    font-size: 14px;
+  }
 }

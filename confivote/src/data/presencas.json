@@ -4,7 +4,7 @@
     "unidade": "01A",
     "nome": "Ana Silva",
     "quotite": 125000,
-    "presente": true,
+    "presente": false,
     "representadoPor": ""
   },
   {
@@ -12,7 +12,7 @@
     "unidade": "02B",
     "nome": "Maria Souza",
     "quotite": 132000,
-    "presente": true,
+    "presente": false,
     "representadoPor": ""
   },
   {
@@ -20,7 +20,7 @@
     "unidade": "03C",
     "nome": "Carlos Lima",
     "quotite": 98000,
-    "presente": true,
+    "presente": false,
     "representadoPor": ""
   },
   {
@@ -29,7 +29,7 @@
     "nome": "Fernanda Rocha",
     "quotite": 110000,
     "presente": false,
-    "representadoPor": "01A"
+    "representadoPor": ""
   },
   {
     "assembleiaId": 1,

@@ -9,22 +9,47 @@
 
 <style>
 
-body { background:#f4f6f9; }
+/* FUNDO PADRÃO */
+body {
+  background: linear-gradient(135deg, #e0f2fe, #dbeafe, #bfdbfe);
+}
 
+/* CARD */
 .card {
-border-radius:14px;
-border:none;
-box-shadow:0 4px 12px rgba(0,0,0,0.08);
+  border-radius:18px;
+  border:none;
+  background: rgba(255,255,255,0.95);
+  box-shadow:0 20px 40px rgba(0,0,0,0.15);
 }
 
+/* TABELA */
 .table thead {
-background:#0d6efd;
-color:white;
+  background:#1e3a8a;
+  color:white;
 }
 
+/* TOTAL */
 .total {
-font-weight:bold;
-font-size:18px;
+  font-weight:bold;
+  font-size:18px;
+  color:#1e3a8a;
+}
+
+/* TÍTULO */
+h4 {
+  font-weight:800;
+  color:#1e3a8a;
+}
+
+/* BOTÕES */
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border:none;
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border:none;
 }
 
 </style>
@@ -35,9 +60,14 @@ font-size:18px;
 
 <div class="container mt-4">
 
+<!-- LOGO -->
+<div class="text-center mb-3">
+  <img src="/img/logo-confivote.png" style="width:90px;">
+</div>
+
 <div class="card p-4">
 
-<h4 class="mb-3">Importar Moradores</h4>
+<h4 class="mb-3 text-center">Importar Moradores</h4>
 
 <input type="file" id="csvFile" accept=".csv" class="form-control mb-3">
 
@@ -48,13 +78,11 @@ Importar moradores
 <table class="table table-hover">
 
 <thead>
-
 <tr>
 <th>Unidade</th>
 <th>Nome</th>
 <th>Quotité</th>
 </tr>
-
 </thead>
 
 <tbody id="tabelaMoradoresBody"></tbody>
@@ -84,57 +112,41 @@ const assembleiaId = params.get("assembleiaId") || "1";
 
 let moradores = [];
 
-
 function importarCSV(){
 
 const input = document.getElementById("csvFile");
 
 if(input.files.length === 0){
-
 alert("Selecione um arquivo CSV");
-
 return;
-
 }
 
 const file = input.files[0];
-
 const reader = new FileReader();
-
 
 reader.onload = function(event){
 
 let text = event.target.result;
-
 let delimiter = ",";
 
 if(text.includes(";")) delimiter = ";";
 
-
 const linhas = text.split(/\r?\n/).filter(l => l.trim() !== "");
 
 if(linhas.length < 2){
-
 alert("Arquivo CSV inválido");
-
 return;
-
 }
 
 moradores = [];
-
 let total = 0;
-
 
 for(let i=1;i<linhas.length;i++){
 
 const colunas = linhas[i].split(delimiter);
-
 if(colunas.length < 3) continue;
 
-
 const unidade = colunas[0].replace(/"/g,"").trim();
-
 const nome = colunas[1].replace(/"/g,"").trim();
 
 let quotite = colunas[2]
@@ -142,45 +154,32 @@ let quotite = colunas[2]
 .replace(",",".")
 .trim();
 
-
 quotite = parseFloat(quotite);
-
 if(isNaN(quotite)) quotite = 0;
 
-
 moradores.push({
-
 assembleiaId:Number(assembleiaId),
 unidade,
 nome,
 quotite
-
 });
 
 total += quotite;
-
 }
 
-
 mostrarTabela();
-
 document.getElementById("totalQuotites").innerText = total.toFixed(2);
 
 localStorage.setItem("moradores_"+assembleiaId, JSON.stringify(moradores));
 
 };
 
-
 reader.readAsText(file,"ISO-8859-1");
-
 }
-
-
 
 function mostrarTabela(){
 
 const tabela = document.getElementById("tabelaMoradoresBody");
-
 tabela.innerHTML = "";
 
 moradores.forEach(m => {
@@ -196,18 +195,13 @@ tr.innerHTML = `
 tabela.appendChild(tr);
 
 });
-
 }
-
 
 function irPresencas(){
 
 if(moradores.length === 0){
-
 alert("Importe os moradores primeiro");
-
 return;
-
 }
 
 window.location.href = "presencas.html?assembleiaId=" + assembleiaId;
