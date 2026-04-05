@@ -22,12 +22,10 @@ function salvarPautas(pautas) {
 function normalizar(p, index) {
     return {
         id: p.id || Date.now() + index,
-        numero: p.numero || (index + 1),
+        numero: Number(p.numero || (index + 1)),
         assembleiaId: Number(p.assembleiaId),
         titulo: p.titulo || `Pauta ${index + 1}`,
-        descricao: p.descricao && p.descricao.trim() !== ""
-            ? p.descricao
-            : (p.titulo && !p.titulo.toLowerCase().includes("pauta") ? p.titulo : ""),
+        descricao: p.descricao || "",
         maioria: p.maioria || "simples",
         status: p.status || "fechada"
     };
@@ -84,38 +82,41 @@ function abrirPauta(req, res) {
 
     let pautas = lerPautas();
 
-    pautas = pautas.map(p => {
+    // fecha todas primeiro
+    pautas.forEach(p => {
         if (Number(p.assembleiaId) === assembleiaId) {
             p.status = "fechada";
         }
-        return p;
     });
 
+    // abre a escolhida
     const pauta = pautas.find(
         p => Number(p.numero) === numero && Number(p.assembleiaId) === assembleiaId
     );
 
-    if (!pauta) return res.json({ erro: "pauta não encontrada" });
+    if (!pauta) return res.status(404).json({ erro: "pauta não encontrada" });
 
     pauta.status = "aberta";
+
     salvarPautas(pautas);
 
-    res.json({ ok: true });
+    res.json({ ok: true, numero: pauta.numero });
 }
 
 function encerrarPauta(req, res) {
     const numero = Number(req.params.numero);
     const assembleiaId = Number(req.query.assembleiaId);
 
-    const pautas = lerPautas();
+    let pautas = lerPautas();
 
     const pauta = pautas.find(
         p => Number(p.numero) === numero && Number(p.assembleiaId) === assembleiaId
     );
 
-    if (!pauta) return res.json({ erro: "pauta não encontrada" });
+    if (!pauta) return res.status(404).json({ erro: "pauta não encontrada" });
 
     pauta.status = "fechada";
+
     salvarPautas(pautas);
 
     res.json({ ok: true });
@@ -127,18 +128,21 @@ function pautaAtiva(req, res) {
     const pautas = lerPautas();
 
     const ativa = pautas.find(
-        p => p.status === "aberta" && Number(p.assembleiaId) === assembleiaId
+        p => Number(p.assembleiaId) === assembleiaId && p.status === "aberta"
     );
 
-    if (!ativa) return res.json({ ativa: false });
+    if (!ativa) {
+        return res.json({
+            ativa: false,
+            numero: null
+        });
+    }
 
-    res.json({
+    return res.json({
         ativa: true,
         numero: ativa.numero,
         titulo: ativa.titulo,
-        descricao: ativa.descricao && ativa.descricao.trim() !== ""
-            ? ativa.descricao
-            : ativa.titulo
+        descricao: ativa.descricao || ativa.titulo
     });
 }
 

@@ -1,38 +1,45 @@
 const fs = require("fs");
 const path = require("path");
 
-const tokensPath = path.join(__dirname, "../data/tokens.json");
+const tokensPath = path.join(__dirname, "../../data/tokens.json");
 
-/* VALIDAR TOKEN */
-exports.validarToken = (req, res) => {
+function lerJson(caminho) {
+  if (!fs.existsSync(caminho)) return [];
+  let conteudo = fs.readFileSync(caminho, "utf8");
+  conteudo = conteudo.replace(/^\uFEFF/, "").trim();
+  if (!conteudo) return [];
+  return JSON.parse(conteudo);
+}
 
-  const { token } = req.query;
+function validarToken(req, res) {
+  try {
+    const token = String(req.query.token || "").trim();
 
-  if (!token) {
-    return res.json({ valido: false });
+    if (!token) {
+      return res.status(400).json({ ok: false, erro: "Token não informado" });
+    }
+
+    const tokens = lerJson(tokensPath);
+
+    const encontrado = tokens.find(t => t.token === token);
+
+    if (!encontrado) {
+      return res.status(404).json({ ok: false, erro: "Token inválido" });
+    }
+
+    return res.json({
+      ok: true,
+      token: encontrado.token,
+      unidade: encontrado.unidade,
+      peso: encontrado.peso
+    });
+
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ ok: false });
   }
+}
 
-  if (!fs.existsSync(tokensPath)) {
-    return res.json({ valido: false });
-  }
-
-  const tokens = JSON.parse(fs.readFileSync(tokensPath, "utf8"));
-
-  const encontrado = tokens.find(t => t.codigo === token);
-
-  if (!encontrado) {
-    return res.json({ valido: false });
-  }
-
-  res.json({
-    valido: true,
-    morador: encontrado.morador,
-    peso: encontrado.peso
-  });
-
-};
-
-/* VOTAR */
-exports.votar = (req, res) => {
-  res.json({ ok: true });
+module.exports = {
+  validarToken
 };

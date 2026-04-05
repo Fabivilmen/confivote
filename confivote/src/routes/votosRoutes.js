@@ -1,17 +1,18 @@
 const express = require("express");
 const router = express.Router();
 
-const {
-  registrarVoto,
-  listarVotosPorPauta,
-  listarVotos
-} = require("../controllers/votosController");
+const votosController = require("../controllers/votosController");
 
-router.post("/", registrarVoto);
+// REGISTRAR VOTO
+router.post("/", votosController.registrarVoto);
 
-// NOVA ROTA (ESSA É A IMPORTANTE)
-router.get("/", listarVotos);
+// LISTAR
+router.get("/", votosController.listarVotos);
 
-router.get("/pauta/:pautaId", listarVotosPorPauta);
+// LISTAR POR PAUTA
+router.get("/pauta/:pautaNumero", votosController.listarVotosPorPauta);
+
+// CORREÇÃO AQUI (AGORA FUNCIONA NO NAVEGADOR)
+router.get("/limpar", votosController.limparVotos);
 
 module.exports = router;

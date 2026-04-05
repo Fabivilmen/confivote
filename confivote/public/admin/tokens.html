@@ -8,13 +8,10 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-
-/* FUNDO PADRÃO */
 body {
   background: linear-gradient(135deg, #e0f2fe, #dbeafe, #bfdbfe);
 }
 
-/* CARD */
 .card {
   border-radius:18px;
   border:none;
@@ -22,19 +19,16 @@ body {
   box-shadow:0 20px 40px rgba(0,0,0,0.15);
 }
 
-/* TÍTULO */
 h2, h4 {
   color:#1e3a8a;
   font-weight:800;
 }
 
-/* TABELA */
 .table thead {
   background:#1e3a8a;
   color:white;
 }
 
-/* BOTÕES */
 .btn-primary {
   background: linear-gradient(135deg, #3b82f6, #1d4ed8);
   border:none;
@@ -45,12 +39,10 @@ h2, h4 {
   border:none;
 }
 
-/* QR */
 img {
   border-radius:8px;
   box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }
-
 </style>
 
 </head>
@@ -59,7 +51,6 @@ img {
 
 <div class="container mt-4">
 
-<!-- LOGO -->
 <div class="text-center mb-3">
   <img src="/img/logo-confivote.png" style="width:90px;">
 </div>
@@ -114,42 +105,63 @@ document.getElementById("btnSessao").href =
 
 const tabela = document.getElementById("tabelaTokens");
 
+function limparTabela(){
+  tabela.innerHTML = "";
+}
+
 async function carregarTokens() {
 
-  const resp = await fetch("/api/tokens?assembleiaId=" + assembleiaId);
-  const tokens = await resp.json();
+  try {
 
-  tabela.innerHTML = "";
+    const resp = await fetch("/api/tokens?assembleiaId=" + assembleiaId);
+    const tokens = await resp.json();
 
-  if (!tokens.length) {
-    tabela.innerHTML = "<tr><td colspan='6'>Nenhum token gerado</td></tr>";
-    return;
+    limparTabela();
+
+    if (!Array.isArray(tokens) || tokens.length === 0) {
+      tabela.innerHTML = "<tr><td colspan='6'>Nenhum token gerado</td></tr>";
+      return;
+    }
+
+    tokens.forEach(t => {
+
+      const peso = Number(t.peso) || 0;
+
+      tabela.innerHTML += `
+        <tr>
+          <td>${t.unidade}</td>
+          <td>${t.morador}</td>
+          <td><strong>${peso}</strong></td>
+          <td><strong>${t.token || t.codigo}</strong></td>
+          <td><img src="${t.qrCode}" width="90"></td>
+          <td><a href="${t.url}" target="_blank">Abrir</a></td>
+        </tr>
+      `;
+    });
+
+  } catch (e) {
+    console.error(e);
+    tabela.innerHTML = "<tr><td colspan='6'>Erro ao carregar tokens</td></tr>";
   }
-
-  tokens.forEach(t => {
-    tabela.innerHTML += `
-      <tr>
-        <td>${t.unidade}</td>
-        <td>${t.morador}</td>
-        <td><strong>${t.peso}</strong></td>
-        <td><strong>${t.token}</strong></td>
-        <td><img src="${t.qrCode}" width="90"></td>
-        <td><a href="${t.url}" target="_blank">Abrir</a></td>
-      </tr>
-    `;
-  });
 
 }
 
 async function gerarTokens() {
 
-  await fetch("/api/tokens/gerar", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ assembleiaId })
-  });
+  try {
 
-  await carregarTokens();
+    await fetch("/api/tokens/gerar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ assembleiaId })
+    });
+
+    await carregarTokens();
+
+  } catch (e) {
+    console.error(e);
+    alert("Erro ao gerar tokens");
+  }
 }
 
 document.getElementById("btnGerar").addEventListener("click", gerarTokens);

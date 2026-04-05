@@ -1,178 +1,138 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>ConfiVote</title>
+<title>Votação</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-body{
-background:#f4f6f9;
-text-align:center;
-padding-top:30px
+body {
+  background: linear-gradient(135deg, #e0f2fe, #dbeafe, #bfdbfe);
 }
-.card{
-border-radius:14px;
-border:none;
-box-shadow:0 4px 12px rgba(0,0,0,.08)
+.card {
+  border-radius: 18px;
+  border: none;
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+h2 {
+  font-weight: 800;
+  color: #1e3a8a;
+}
+.btn {
+  border-radius: 10px;
+  font-weight: 600;
 }
 </style>
-
 </head>
 
 <body>
 
-<div class="container">
+<div class="container py-5">
 
-<div class="card p-4">
+<div class="card p-4 text-center">
 
-<h3 class="mb-3">ConfiVote</h3>
+<h2>ConfiVote</h2>
 
-<div id="status">Validando token...</div>
-<div id="titular" class="mt-2"></div>
-<div id="peso" class="mb-3"></div>
+<div id="status">Carregando...</div>
 
-<div id="pauta"></div>
+<div id="areaVoto" style="display:none; margin-top:20px;">
+  <button class="btn btn-success w-100 mb-2" onclick="votar('SIM')">SIM</button>
+  <button class="btn btn-danger w-100 mb-2" onclick="votar('NAO')">NÃO</button>
+  <button class="btn btn-warning w-100" onclick="votar('ABSTENCAO')">ABSTENÇÃO</button>
+</div>
+
+<div id="mensagem" style="margin-top:15px;"></div>
 
 </div>
 
 </div>
 
 <script>
+window.onload = function(){
 
-const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(window.location.search);
 
-const token = params.get("token");
-const assembleiaId = params.get("assembleiaId");
+  const token = params.get("token");
+  const assembleiaId = params.get("assembleiaId");
 
-let pautaAtual = null;
+  window.tokenGlobal = token;
+  window.assembleiaIdGlobal = assembleiaId;
 
-async function validarToken(){
+  const statusEl = document.getElementById("status");
 
-try{
+  if (!token) {
+    statusEl.innerText = "Token não informado";
+    return;
+  }
 
-if(!token){
-document.getElementById("status").innerHTML =
-"<span class='text-danger'>Token não informado</span>";
-return;
-}
+  validarToken(token);
+};
 
-const res = await fetch("/api/votar/validar?token="+token);
-const data = await res.json();
+async function validarToken(token){
+  try{
 
-if(!data.valido){
-document.getElementById("status").innerHTML =
-"<span class='text-danger'>Token inválido</span>";
-return;
-}
+    const resp = await fetch("/api/votar/validar?token=" + encodeURIComponent(token));
+    const data = await resp.json();
 
-document.getElementById("status").innerHTML =
-"<span class='text-success'>Token válido</span>";
+    if(!data.ok){
+      document.getElementById("status").innerText = "Token inválido";
+      return;
+    }
 
-document.getElementById("titular").innerHTML =
-"Titular: <b>"+data.morador+"</b>";
+    document.getElementById("status").innerText =
+      "Unidade: " + data.unidade + " | Peso: " + data.peso;
 
-document.getElementById("peso").innerHTML =
-"Peso: "+data.peso;
+    verificarPauta();
 
-}catch(e){
-
-document.getElementById("status").innerHTML =
-"<span class='text-danger'>Erro ao validar token</span>";
-
-}
-
+  }catch(e){
+    document.getElementById("status").innerText = "Erro ao validar token";
+  }
 }
 
 async function verificarPauta(){
+  try{
 
-try{
+    const resp = await fetch("/api/pautas/ativa?assembleiaId=" + assembleiaIdGlobal);
+    const pauta = await resp.json();
 
-const res = await fetch("/api/pautas/ativa?assembleiaId="+assembleiaId);
-const pauta = await res.json();
+    if(!pauta.ativa){
+      document.getElementById("mensagem").innerText = "Aguardando abertura da pauta...";
+      setTimeout(verificarPauta, 3000);
+      return;
+    }
 
-if(!pauta.ativa){
+    document.getElementById("mensagem").innerText =
+      "Pauta " + pauta.numero + " aberta: " + pauta.titulo;
 
-document.getElementById("pauta").innerHTML =
-"<div class='text-muted'>Aguardando abertura da pauta...</div>";
+    document.getElementById("areaVoto").style.display = "block";
 
-return;
-
-}
-
-pautaAtual = pauta;
-
-document.getElementById("pauta").innerHTML = `
-
-<h4 class="mt-3 mb-2">
-Pauta ${pauta.numero}
-</h4>
-
-<div class="fw-bold mb-2">
-${pauta.titulo}
-</div>
-
-<div class="text-muted mb-4">
-${pauta.descricao}
-</div>
-
-<div class="d-flex justify-content-center gap-3">
-
-<button class="btn btn-success btn-lg"
-onclick="votar('SIM')">SIM</button>
-
-<button class="btn btn-danger btn-lg"
-onclick="votar('NAO')">NÃO</button>
-
-<button class="btn btn-warning btn-lg"
-onclick="votar('ABSTENCAO')">ABSTENÇÃO</button>
-
-</div>
-
-`;
-
-}catch(e){
-
-document.getElementById("pauta").innerHTML =
-"<div class='text-danger'>Erro ao carregar pauta</div>";
-
-}
-
+  }catch(e){
+    document.getElementById("mensagem").innerText = "Erro ao verificar pauta";
+  }
 }
 
 async function votar(voto){
+  try{
 
-if(!pautaAtual){
-alert("Nenhuma pauta ativa");
-return;
+    await fetch("/api/votos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        token: tokenGlobal,
+        assembleiaId: assembleiaIdGlobal,
+        voto: voto
+      })
+    });
+
+    document.getElementById("mensagem").innerText = "Voto registrado com sucesso";
+    document.getElementById("areaVoto").style.display = "none";
+
+  }catch(e){
+    document.getElementById("mensagem").innerText = "Erro ao votar";
+  }
 }
-
-await fetch("/api/votar",{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-token:token,
-pautaNumero:pautaAtual.numero,
-assembleiaId:assembleiaId,
-voto:voto
-})
-
-});
-
-document.getElementById("pauta").innerHTML =
-"<div class='text-success mt-3'>Voto registrado ✔</div>";
-
-}
-
-validarToken();
-setInterval(verificarPauta,2000);
-
 </script>
 
 </body>

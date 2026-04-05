@@ -30,5 +30,14 @@
     "descricao": "",
     "maioria": "simples",
     "status": "fechada"
+  },
+  {
+    "id": 1775411348076,
+    "numero": 1,
+    "assembleiaId": 1,
+    "titulo": "luzes ",
+    "descricao": "",
+    "maioria": "unanimidade",
+    "status": "fechada"
   }
 ]

@@ -1,29 +1,58 @@
 [
   {
-    "assembleiaId": "1",
+    "assembleiaId": 1,
     "unidade": "01A",
     "nome": "Ana Silva",
     "quotite": 125000,
     "presente": true,
-    "representadoPor": "",
-    "assinatura": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIwAAAAtCAYAAAB8gIN1AAABL0lEQVR4AezSyxHEIAwEUdfmH/QmAAcokMuj5yMf4enp3+NDYIEAYRZgOfo8hGHBEgHCLOFymDAcWCJAmCVcDhOGA0sEPiPMUiqHrxEgzDW0mYMJk9nrtVSEuYY2czBhMnu9loow19BmDiZMZq/XUhHmNNrweYQJL/h0PMKcJho+jzDhBZ+OR5jTRMPnESa84NPxCHOaaPg8woQXPI+3t0OYPW5tbxGmbfV7wQmzx63tLcK0rX4vOGH2uLW9RZi21e8FJ8wet7a3XhCmLeuI4ISJqLEuBGHqWEe8RJiIGutCEKaOdcRLhImosS4EYepYR7xEmHmNdgYECDOAYmlOgDBzNnYGBAgzgGJpToAwczZ2BgQIM4BiaU6AMHM2dgYECDOA8rWlyv8lTCXtgLf+AAAA//9Xx3vRAAAABklEQVQDABvhAFtl44kbAAAAAElFTkSuQmCC"
+    "representadoPor": ""
   },
   {
-    "assembleiaId": "1",
+    "assembleiaId": 1,
     "unidade": "02B",
     "nome": "Maria Souza",
     "quotite": 132000,
     "presente": true,
-    "representadoPor": "",
-    "assinatura": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIwAAAAtCAYAAAB8gIN1AAABL0lEQVR4AezSyxHEIAwEUdfmH/QmAAcokMuj5yMf4enp3+NDYIEAYRZgOfo8hGHBEgHCLOFymDAcWCJAmCVcDhOGA0sEPiPMUiqHrxEgzDW0mYMJk9nrtVSEuYY2czBhMnu9loow19BmDiZMZq/XUhHmNNrweYQJL/h0PMKcJho+jzDhBZ+OR5jTRMPnESa84NPxCHOaaPg8woQXPI+3t0OYPW5tbxGmbfV7wQmzx63tLcK0rX4vOGH2uLW9RZi21e8FJ8wet7a3XhCmLeuI4ISJqLEuBGHqWEe8RJiIGutCEKaOdcRLhImosS4EYepYR7xEmHmNdgYECDOAYmlOgDBzNnYGBAgzgGJpToAwczZ2BgQIM4BiaU6AMHM2dgYECDOA8rWlyv8lTCXtgLf+AAAA//9Xx3vRAAAABklEQVQDABvhAFtl44kbAAAAAElFTkSuQmCC"
+    "representadoPor": ""
   },
   {
-    "assembleiaId": "1",
+    "assembleiaId": 1,
     "unidade": "03C",
     "nome": "Carlos Lima",
     "quotite": 98000,
     "presente": true,
-    "representadoPor": "01A",
-    "assinatura": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIwAAAAtCAYAAAB8gIN1AAABL0lEQVR4AezSyxHEIAwEUdfmH/QmAAcokMuj5yMf4enp3+NDYIEAYRZgOfo8hGHBEgHCLOFymDAcWCJAmCVcDhOGA0sEPiPMUiqHrxEgzDW0mYMJk9nrtVSEuYY2czBhMnu9loow19BmDiZMZq/XUhHmNNrweYQJL/h0PMKcJho+jzDhBZ+OR5jTRMPnESa84NPxCHOaaPg8woQXPI+3t0OYPW5tbxGmbfV7wQmzx63tLcK0rX4vOGH2uLW9RZi21e8FJ8wet7a3XhCmLeuI4ISJqLEuBGHqWEe8RJiIGutCEKaOdcRLhImosS4EYepYR7xEmHmNdgYECDOAYmlOgDBzNnYGBAgzgGJpToAwczZ2BgQIM4BiaU6AMHM2dgYECDOA8rWlyv8lTCXtgLf+AAAA//9Xx3vRAAAABklEQVQDABvhAFtl44kbAAAAAElFTkSuQmCC"
+    "representadoPor": ""
+  },
+  {
+    "assembleiaId": 1,
+    "unidade": "04A",
+    "nome": "Fernanda Rocha",
+    "quotite": 110000,
+    "presente": false,
+    "representadoPor": ""
+  },
+  {
+    "assembleiaId": 1,
+    "unidade": "05B",
+    "nome": "João Ferreira",
+    "quotite": 102000,
+    "presente": false,
+    "representadoPor": ""
+  },
+  {
+    "assembleiaId": 1,
+    "unidade": "06C",
+    "nome": "Juliana Martins",
+    "quotite": 118000,
+    "presente": false,
+    "representadoPor": ""
+  },
+  {
+    "assembleiaId": 1,
+    "unidade": "07A",
+    "nome": "Roberto Costa",
+    "quotite": 95000,
+    "presente": false,
+    "representadoPor": ""
   }
 ]

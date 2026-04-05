@@ -13,10 +13,8 @@ function readJson(file) {
   return JSON.parse(raw);
 }
 
-// RESULTADO COM PERCENTUAL REAL
 function calcularResultado(sim, nao) {
   const total = sim + nao;
-
   if (total === 0) return "SEM VOTOS";
 
   const percSim = (sim / total) * 100;
@@ -30,32 +28,37 @@ function montarDadosAta(assembleiaId) {
   const pautas = readJson("pautas.json");
   const votos = readJson("votos.json");
 
-  const assembleia = assembleias.find(a => String(a.id) === String(assembleiaId));
+  const assembleia = assembleias.find(
+    a => String(a.id) === String(assembleiaId)
+  );
+
   if (!assembleia) return null;
 
-  const votosAG = votos.filter(v => String(v.assembleiaId) === String(assembleiaId));
-  const pautasAG = pautas.filter(p => String(p.assembleiaId) === String(assembleiaId));
+  const votosAG = votos.filter(
+    v => String(v.assembleiaId) === String(assembleiaId)
+  );
+
+  const pautasAG = pautas.filter(
+    p => String(p.assembleiaId) === String(assembleiaId)
+  );
 
   const resultados = pautasAG.map(p => {
-    const vp = votosAG.filter(v =>
-      String(v.pautaNumero) === String(p.numero)
+    const vp = votosAG.filter(
+      v => String(v.pautaNumero) === String(p.numero)
     );
 
     let sim = 0, nao = 0, abst = 0;
-
-    const tokensJaContados = new Set();
+    const tokensContados = new Set();
 
     vp.forEach(v => {
-
-      // evita duplicidade por token
-      if (tokensJaContados.has(v.token)) return;
-      tokensJaContados.add(v.token);
+      if (tokensContados.has(v.token)) return;
+      tokensContados.add(v.token);
 
       const peso = Number(v.peso) || 1;
-      const vv = String(v.voto).toUpperCase();
+      const voto = String(v.voto).toUpperCase();
 
-      if (vv === "SIM") sim += peso;
-      else if (vv === "NAO" || vv === "NÃO") nao += peso;
+      if (voto === "SIM") sim += peso;
+      else if (voto === "NAO" || voto === "NÃO") nao += peso;
       else abst += peso;
     });
 
@@ -88,31 +91,46 @@ exports.getAtaPdf = (req, res) => {
   const dados = montarDadosAta(assembleiaId);
   if (!dados) return res.status(404).send("Assembleia não encontrada");
 
+  const a = dados.assembleia;
+
+  // CORREÇÃO DEFINITIVA
+  const nomePredio =
+    a.condominio ||
+    a.predio ||
+    a.nome ||
+    a.copropriedade ||
+    "-";
+
+  const local =
+    a.local ||
+    a.endereco ||
+    a.morada ||
+    "-";
+
   res.setHeader("Content-Type", "application/pdf");
 
   const doc = new PDFDocument({ margin: 50 });
   doc.pipe(res);
+
   const logoPath = path.join(__dirname, "../../public/img/logo-confivote.png");
 
-if (fs.existsSync(logoPath)) {
-  doc.image(logoPath, {
-    fit: [120, 120],
-    align: "center"
-  });
-  doc.moveDown();
-}
+  if (fs.existsSync(logoPath)) {
+    doc.image(logoPath, { fit: [120, 120], align: "center" });
+    doc.moveDown();
+  }
 
   doc
     .fontSize(18)
     .fillColor("#0d6efd")
     .text("ATA DA ASSEMBLEIA GERAL DE COPROPRIEDADE", { align: "center" });
+
   doc.moveDown();
 
   doc.fontSize(11).fillColor("black");
 
-  doc.text(`Copropriedade: ${dados.assembleia.predio || "-"}`);
-  doc.text(`Data: ${dados.assembleia.data || "-"}`);
-  doc.text(`Local: ${dados.assembleia.local || "-"}`);
+  doc.text(`Copropriedade: ${nomePredio}`);
+  doc.text(`Data: ${a.data || "-"}`);
+  doc.text(`Local: ${local}`);
   doc.text(`Início da sessão: ${inicio}`);
   doc.text(`Encerramento da sessão: ${fim}`);
 
@@ -125,11 +143,11 @@ if (fs.existsSync(logoPath)) {
 
   doc.moveDown();
 
-  dados.resultados.forEach((r, i) => {
+  dados.resultados.forEach((r) => {
     doc
       .fontSize(13)
       .fillColor("#0d6efd")
-      .text(`Pauta ${i + 1} - ${r.titulo}`, { underline: true });
+      .text(`Pauta ${r.numero} - ${r.titulo}`, { underline: true });
 
     doc.moveDown(0.5);
 
@@ -158,7 +176,7 @@ if (fs.existsSync(logoPath)) {
 
   doc.text(`Presidente: ${presidente || "________________________"}`);
   doc.text(`Secretário: ${secretario || "________________________"}`);
-  doc.text(`Syndic: ${sindico || "________________________"}`);
+  doc.text(`Síndico: ${sindico || "________________________"}`);
 
   doc.end();
 };

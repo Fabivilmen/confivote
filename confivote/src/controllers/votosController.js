@@ -24,9 +24,9 @@ function salvarJson(filePath, data) {
 // =========================
 exports.registrarVoto = (req, res) => {
   try {
-    const { assembleiaId, pautaId, pautaNumero, token, voto } = req.body;
+    const { assembleiaId, pautaNumero, token, voto } = req.body;
 
-    if (!assembleiaId || !token || !voto) {
+    if (!assembleiaId || !pautaNumero || !token || !voto) {
       return res.status(400).json({ ok: false, erro: "Dados inválidos" });
     }
 
@@ -36,8 +36,7 @@ exports.registrarVoto = (req, res) => {
     // impedir duplicidade (mesmo token na mesma pauta)
     const jaVotou = votos.find(v =>
       String(v.assembleiaId) === String(assembleiaId) &&
-      (String(v.pautaId) === String(pautaId) ||
-       String(v.pautaNumero) === String(pautaNumero)) &&
+      String(v.pautaNumero) === String(pautaNumero) &&
       v.token === token
     );
 
@@ -45,7 +44,7 @@ exports.registrarVoto = (req, res) => {
       return res.status(400).json({ ok: false, erro: "Token já votou nesta pauta" });
     }
 
-    // buscar token
+    // validar token
     const tokenObj = tokens.find(t =>
       t.token === token || t.codigo === token
     );
@@ -56,11 +55,10 @@ exports.registrarVoto = (req, res) => {
 
     votos.push({
       id: Date.now(),
-      assembleiaId,
-      pautaId: pautaId || null,
-      pautaNumero: pautaNumero || null,
+      assembleiaId: Number(assembleiaId),
+      pautaNumero: Number(pautaNumero),
       token,
-      voto: voto.toUpperCase(),
+      voto: String(voto).toUpperCase(),
       peso: Number(tokenObj.peso) || 1,
       createdAt: new Date().toISOString()
     });
@@ -76,7 +74,7 @@ exports.registrarVoto = (req, res) => {
 };
 
 // =========================
-// LISTAR TODOS OS VOTOS DA ASSEMBLEIA
+// LISTAR VOTOS DA ASSEMBLEIA
 // =========================
 exports.listarVotos = (req, res) => {
   try {
@@ -101,12 +99,12 @@ exports.listarVotos = (req, res) => {
 // =========================
 exports.listarVotosPorPauta = (req, res) => {
   try {
-    const { pautaId } = req.params;
+    const { pautaNumero } = req.params;
 
     const votos = lerJson(votosPath);
 
     const filtrados = votos.filter(v =>
-      String(v.pautaId) === String(pautaId)
+      String(v.pautaNumero) === String(pautaNumero)
     );
 
     res.json({ ok: true, dados: filtrados });
@@ -147,5 +145,28 @@ exports.validarToken = (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ valido: false });
+  }
+};
+
+// =========================
+// LIMPAR VOTOS (ESSENCIAL)
+// =========================
+exports.limparVotos = (req, res) => {
+  try {
+    const { assembleiaId } = req.query;
+
+    let votos = lerJson(votosPath);
+
+    votos = votos.filter(v =>
+      String(v.assembleiaId) !== String(assembleiaId)
+    );
+
+    salvarJson(votosPath, votos);
+
+    res.json({ ok: true });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ ok: false });
   }
 };
